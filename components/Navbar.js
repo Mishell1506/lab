@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import AuthGuard from './AuthGuard';
 
 export default function Navbar({ showLogout = false }) {
   const pathname = usePathname();
@@ -14,28 +15,31 @@ export default function Navbar({ showLogout = false }) {
   ];
 
   return (
-    <nav className="app-navbar">
-      <div className="navbar-container">
-        <div className="nav-logo">
-          <span className="nav-logo-text">SoporteApp</span>
+    <>
+      <AuthGuard />
+      <nav className="app-navbar">
+        <div className="navbar-container">
+          <div className="nav-logo">
+            <span className="nav-logo-text">SoporteApp</span>
+          </div>
+          <div className="nav-links">
+            {links.map((link) => (
+              <Link
+                key={link.key}
+                href={link.href}
+                className={`nav-link ${pathname === link.href ? 'active' : ''}`}
+              >
+                <span>{link.label}</span>
+              </Link>
+            ))}
+            {showLogout && (
+              <a href="/api/auth/logout" className="nav-link btn-nav-logout">
+                <span>Salir</span>
+              </a>
+            )}
+          </div>
         </div>
-        <div className="nav-links">
-          {links.map((link) => (
-            <Link
-              key={link.key}
-              href={link.href}
-              className={`nav-link ${pathname === link.href ? 'active' : ''}`}
-            >
-              <span>{link.label}</span>
-            </Link>
-          ))}
-          {showLogout && (
-            <a href="/api/auth/logout" className="nav-link btn-nav-logout">
-              <span>Salir</span>
-            </a>
-          )}
-        </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 }
