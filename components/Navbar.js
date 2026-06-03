@@ -14,6 +14,12 @@ export default function Navbar({ showLogout = false }) {
     { href: '/buscar', label: 'Buscar', key: 'buscar' },
   ];
 
+  const handleLogout = (e) => {
+    e.preventDefault();
+    localStorage.removeItem('isLoggedIn');
+    window.location.href = '/api/auth/logout';
+  };
+
   return (
     <>
       <AuthGuard />
@@ -33,7 +39,7 @@ export default function Navbar({ showLogout = false }) {
               </Link>
             ))}
             {showLogout && (
-              <a href="/api/auth/logout" className="nav-link btn-nav-logout">
+              <a href="/api/auth/logout" onClick={handleLogout} className="nav-link btn-nav-logout">
                 <span>Salir</span>
               </a>
             )}
