@@ -14,11 +14,23 @@ export default function Navbar({ showLogout = false }) {
     { href: '/buscar', label: 'Buscar', key: 'buscar' },
   ];
 
-  const handleLogout = (e) => {
+  const handleLogout = async (e) => {
     e.preventDefault();
-    localStorage.removeItem('isLoggedIn');
-    sessionStorage.setItem('loggedOut', 'true');
-    window.location.href = '/api/auth/logout';
+    
+    // Wipe all local storage completely
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Clear all service worker caches if any
+    if (typeof caches !== 'undefined') {
+      try {
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(name => caches.delete(name)));
+      } catch (err) {}
+    }
+    
+    // Use replace instead of href to overwrite the current history entry
+    window.location.replace('/api/auth/logout');
   };
 
   return (

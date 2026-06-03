@@ -6,5 +6,10 @@ export async function GET(request) {
 
   // Build absolute URL from the incoming request
   const url = new URL('/', request.url);
-  return NextResponse.redirect(url);
+  const response = NextResponse.redirect(url);
+  
+  // Wipe all browser cache, cookies, and storage for security
+  response.headers.set('Clear-Site-Data', '"cache", "cookies", "storage"');
+  
+  return response;
 }
