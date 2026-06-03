@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import { clearAuthCookie } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(request) {
   await clearAuthCookie();
-  return NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'));
+
+  // Build absolute URL from the incoming request
+  const url = new URL('/', request.url);
+  return NextResponse.redirect(url);
 }
