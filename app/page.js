@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import BackgroundBlobs from '@/components/BackgroundBlobs';
 
@@ -10,6 +10,22 @@ export default function LoginPage() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Trap back button if user just logged out
+  useEffect(() => {
+    if (sessionStorage.getItem('loggedOut') === 'true') {
+      // Push a dummy state so the back button just goes to this same page
+      window.history.pushState(null, '', window.location.href);
+      
+      const handlePopState = () => {
+        // When they press back, push it forward again to trap them on the login page
+        window.history.pushState(null, '', window.location.href);
+      };
+      
+      window.addEventListener('popstate', handlePopState);
+      return () => window.removeEventListener('popstate', handlePopState);
+    }
+  }, []);
 
   const switchTab = (tab) => {
     setActiveTab(tab);
@@ -48,6 +64,7 @@ export default function LoginPage() {
       }
 
       localStorage.setItem('isLoggedIn', 'true');
+      sessionStorage.removeItem('loggedOut');
       router.push('/home');
       router.refresh();
     } catch (err) {

@@ -17,6 +17,7 @@ export default function Navbar({ showLogout = false }) {
   const handleLogout = (e) => {
     e.preventDefault();
     localStorage.removeItem('isLoggedIn');
+    sessionStorage.setItem('loggedOut', 'true');
     window.location.href = '/api/auth/logout';
   };
 
